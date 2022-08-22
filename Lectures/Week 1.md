@@ -464,7 +464,7 @@ Local classes are classes that are defined in a block, which is a group of zero 
 
 ## 4.1. Declaring Local Classes
 
-You can define a local class inside any block (see Expressions, Statements, and Blocks for more information). For example, you can define a local class in a method body, a for loop, or an if clause.
+You can define a local class inside any block. For example, you can define a local class in a method body, a for loop, or an if clause.
 
 The following example, LocalClassExample, validates two phone numbers. It defines the local class PhoneNumber in the method validatePhoneNumber:
 
