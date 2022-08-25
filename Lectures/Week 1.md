@@ -712,7 +712,7 @@ Simply put, streams are wrappers around a data source, allowing us to operate wi
 
 ### Stream source
 
-Streams can be created from Collections, Lists, Sets, ints, longs, doubles, arrays, and lines of a file. Streams
+Streams can be created from Collections, Lists, Sets, ints, longs, doubles, arrays, and lines of a file.
 
 ### Stream Operations are either intermediate or terminal
 
