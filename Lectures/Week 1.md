@@ -692,3 +692,176 @@ The method operateBinary performs a mathematical operation on two integer operan
 ## 6.2 Serialization
 
 You can serialize a lambda expression if its target type and its captured arguments are serializable. However, like inner classes, the serialization of lambda expressions is strongly discouraged.
+
+# 7. Stream Processing
+
+Streams bring functional programming to Java, and are supported starting in Java 8. A stream pipeline consists of a source, followed by zero or more intermediate operations and a terminal operation.
+
+Some advantages of Streams:
+
+- Will make you a more efficient Java programmer
+- Make heavy use of lamda expressions
+- Uses lazy evaluation to reduce memory consumption (see examples)
+- And more.
+
+Also, Java 8 Streams should not be confused with Java I/O streams (ex: FileInputStream etc); these have very little to do with each other.
+
+Simply put, streams are wrappers around a data source, allowing us to operate with that data source and making bulk processing convenient and fast.
+
+![](../Imgs/week_1_streams.png)
+
+### Stream source
+
+Streams can be created from Collections, Lists, Sets, ints, longs, doubles, arrays, and lines of a file. Streams
+
+### Stream Operations are either intermediate or terminal
+
+- **Intermediate operations** such as filter, map or sort return a stream so we can chain multiple intermediate operations.
+- **Terminal operations** such as forEach, collect or reduce are either void or return a non-stream result.
+
+## Intermediate Operations
+
+Zero or more intermediate operations are allowed. Order matters for large datasets: **filter first**, then sort or map. More intermediate operations include: anyMatch(), distinct(), filter(), findFirst(), skip(), map(), sorted() and flatmap().
+
+## Terminal Operations
+
+One terminal operation is allowed. **forEach** applies the same function to each element. **collect** saves the elements into a collection. **reduce** reduces the stream into a single summary element. More terminal operations include: count(), max(), min(), reduce() and summaryStatistics().
+
+```java
+    // 1. Integer Stream
+		IntStream
+			.range(1, 10)
+			.forEach(System.out::print);
+		System.out.println();
+
+		// 2. Integer Stream with skip
+		IntStream
+			.range(1, 10)
+			.skip(5)
+			.forEach(x -> System.out.println(x));
+		System.out.println();
+
+		// 3. Integer Stream with sum
+		System.out.println(
+		IntStream
+			.range(1, 5)
+			.sum());
+		System.out.println();
+
+		// 4. Stream.of, sorted and findFirst
+		Stream.of("Ava", "Aneri", "Alberto")
+			.sorted()
+			.findFirst()
+			.ifPresent(System.out::println);
+
+		// 5. Stream from Array, sort, filter and print
+		String[] names = {"Al", "Ankit", "Kushal", "Brent", "Sarika", "amanda", "Hans", "Shivika", "Sarah"};
+		Arrays.stream(names)	// same as Stream.of(names)
+			.filter(x -> x.startsWith("S"))
+			.sorted()
+			.forEach(System.out::println);
+
+		// 6. average of squares of an int array
+		Arrays.stream(new int[] {2, 4, 6, 8, 10})
+			.map(x -> x * x)
+			.average()
+			.ifPresent(System.out::println);
+
+		// 7. Stream from List, filter and print
+		List<String> people = Arrays.asList("Al", "Ankit", "Brent", "Sarika", "amanda", "Hans", "Shivika", "Sarah");
+		people
+			.stream()
+			.map(String::toLowerCase)
+			.filter(x -> x.startsWith("a"))
+			.forEach(System.out::println);
+
+		// 8. Stream rows from text file, sort, filter, and print
+		Stream<String> bands = Files.lines(Paths.get("bands.txt"));
+		bands
+			.sorted()
+			.filter(x -> x.length() > 13)
+			.forEach(System.out::println);
+		bands.close();
+
+		// 9. Stream rows from text file and save to List
+		List<String> bands2 = Files.lines(Paths.get("bands.txt"))
+			.filter(x -> x.contains("jit"))
+			.collect(Collectors.toList());
+		bands2.forEach(x -> System.out.println(x));
+
+		// 10. Stream rows from CSV file and count
+		Stream<String> rows1 = Files.lines(Paths.get("data.txt"));
+		int rowCount = (int)rows1
+			.map(x -> x.split(","))
+            .filter(x -> x.length == 3)
+			.count();
+		System.out.println(rowCount + " rows.");
+		rows1.close();
+
+		// 11. Stream rows from CSV file, parse data from rows
+		Stream<String> rows2 = Files.lines(Paths.get("data.txt"));
+		rows2
+			.map(x -> x.split(","))
+            .filter(x -> x.length == 3)
+			.filter(x -> Integer.parseInt(x[1]) > 15)
+			.forEach(x -> System.out.println(x[0] + "  " + x[1] + "  " + x[2]));
+		rows2.close();
+
+    // 12. Reduction - sum
+		double total = Stream.of(7.3, 1.5, 4.8)
+			.reduce(0.0, (Double a, Double b) -> a + b);
+		System.out.println("Total = " + total);
+
+		// 13. Reduction - summary statistics
+		IntSummaryStatistics summary = IntStream.of(7, 2, 19, 88, 73, 4, 10)
+			.summaryStatistics();
+		System.out.println(summary);
+```
+
+data.txt
+
+```
+A,12,3.7
+B,17,2.8
+C,14,1.9
+D,23,2.7
+E
+F,18,3.4
+```
+
+bands.txt
+
+```
+Rolling Stones
+Lady Gaga
+Jackson Browne
+Maroon 5
+Arijit Singh
+Elton John
+John Mayer
+CCR
+Eagles
+Pink
+Aerosmith
+Adele
+Taylor Swift
+Faye Wong
+Bob Seger
+ColdPlay
+Boston
+The Cars
+Cheap Trick
+Def Leppard
+Ed Sheeran
+Dire Straits
+Train
+Tom Petty
+Jack Johnson
+Jimmy Buffett
+Mumford and Sons
+Phil Collins
+Rod Stewart
+The Script
+Elvis
+Michael Buble
+```
