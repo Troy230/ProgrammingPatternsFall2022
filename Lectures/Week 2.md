@@ -77,8 +77,8 @@ With this change, the Box class becomes:
   * @param <T> the type of the value being boxed
   */
   public class Box<T> {
-  // T stands for "Type"
-  private T t;
+      // T stands for "Type"
+      private T t;
 
       public void set(T t) { this.t = t; }
       public T get() { return t; }
@@ -139,8 +139,8 @@ As mentioned previously, a generic class can have multiple type parameters. For 
 
 ```java
 public interface Pair<K, V> {
-public K getKey();
-public V getValue();
+    public K getKey();
+    public V getValue();
 }
 
 public class OrderedPair<K, V> implements Pair<K, V> {
@@ -374,9 +374,9 @@ public class MyArrayList<E> {
 		myStore[actSize++] = e;
 	}
 
-	public Object remove(int index) {
+	public E remove(int index) {
 		if (index < actSize) {
-			Object obj = myStore[index];
+			E e = (E) myStore[index];
 			myStore[index] = null;
 			int tmp = index;
 
@@ -387,7 +387,7 @@ public class MyArrayList<E> {
 			}
 
 			actSize--;
-			return obj;
+			return e;
 		} else {
 			throw new ArrayIndexOutOfBoundsException();
 		}
@@ -498,16 +498,16 @@ public class LinkedList {
 			head = head.next;
 		} else {
 			Node n = head;
-			Node n1 = null;
+			// Node n1 = null;
 
 			for (int i = 0; i < index - 1; i++) {
 				n = n.next;
 			}
-
-			n1 = n.next;
-			n.next = n1.next;
-			// System.out.println("n1 " + n1.data);
-			n1 = null;
+      n.next = n.next.next;
+			// n1 = n.next;
+			// n.next = n1.next;
+			// // System.out.println("n1 " + n1.data);
+			// n1 = null;
 		}
 	}
 
