@@ -1,108 +1,4 @@
-# 1. ArrayList (Review)
-
-## 1. Another look at Array
-
-`Array` is a collection of data, with fixed size. Due to the fact that we cannot change its size, it is good to be used in certain situations when the size of the data should be fixed, for example frames of a video, a go game gameboard, or sudoku games. But in a situation that you should change the size of the collection frequently, array is not the best choice, cause every time you want to add a new data, you have to create a new piece of memory to store the data, then copy everything you have, to the new memory, then add the new data in the end. The same when you want to delete some data.
-
-Why arrays behaves like this is because elements are **continuously** stored in an array, and it brings both pro and con at the same time.
-
-- **Pro**: Since the elements are continuously stored in an array, it would be **easy to calculate the address of each element**. For example: for array `int[] nums = {1, 2, 3};` , assume the address of the array is `aa`, then the address of the first element is also `aa`, and because it is an `int` array, each element would take 4 bytes space, so the address of the second element is `aa + 4`, and the address of the third element is `aa + 8`, the address of element at index `n` (if exists) would be `aa + 4 * n`. In this case, **since we can easily calculate the address of an element, it would be really quick to read and modify it**.
-- **Con** To keep all elements next to each other in the memory is not easy, especially when we want to add or remove an element. Same example: `int[] nums = {1, 2, 3};`, there are 3 elements in the array, if we want to add a new element to it, we have to create a new array with length of 4, then copy the 3 elements to it, then we can add the new element in the end. And if we want to remove the element `2`, we have to create a new array with length of 2, then copy the element `1` to it, and then copy the element `3` to it. This creating new array and copying will take a lot of time, especially when you want to add or remove many elements.
-
-## 2. What is ArrayList
-
-`ArrayList` is very similar to `Array`, **elements inside are also continuously stored. Thus it has the same pro and con as array (good at reading and writing an element, bad at adding or removing an element)**. However, `ArrayList` belongs to a bigger "family" `List`, which contains many pre-exists methods that we can directly use, for example methods to add a new element and methods to remove an existed element. Most importantly, those methods are optimized, so **ArrayList is much easier to use for adding or removing elements comparing with array**.
-
-### 2.1 Concept of capacity
-
-Each ArrayList has an attribute `capacity` to indicate how many elements it can hold. Notice: `capacity` does not indicates the number of elements an ArrayList has. You can understand ArrayList as a bag with a specific volume, for example you can put 10 books inside at most. It does not mean there are 10 books in the bag already, there can be 1 book or 8 books or no books inside, and that won't affect the capacity of the bag.
-
-An array can also be understood as a bag too, however, the bag is always full, if the capacity is 10, then it will be automatically filled by 10 elements, so you may feel the capacity and the number of elements are the same. However, the ArrayList can have some empty space, so the capacity and the number of elements are not necessary the same. Only when the ArrayList is full, then the capacity equals the number of elements.
-
-### 2.2 Why ArrayList is better than Array for inserting
-
-If the number of elements is not equal to the capacity of an array, it means there are some free but "reserved" space in the ArrayList. You can directly add a new element into the reserved place without creating a new ArrayList. For example, if the capacity of an ArrayList is 10, but it only contains 2 elements, then you can add 8 elements to it without creating a new ArrayList. This will save many times since there is no memory allocating and copying. Only when the capacity is full, like there are 10 elements in the ArrayList so there is no more free space in the ArrayList, then if you want to add a new element, Java will create a new ArrayList, **with the capacity twice as big as the original one** (that would be 20 if the capacity of the original one is 10), and then copy the original 10 elements into the new ArrayList. In this case, there will be 10 free spaces for later use. When the new ArrayList with capacity of 20 is full again, Java will create a new ArrayList of capacity of 40 and copy the original 20 elements into it so it has another 20 free space to use.
-
-## 3 Creating an ArrayList
-
-ArrayList is pre-defined class in Java, so if you want to create an ArrayList, you can directly use its constructor
-
-```java
-// not suggested, has no data type restriction
-ArrayList al1 = new ArrayList();            // array list of Objects
-al1.add(1);                                 // elements can be anything
-al1.add(1.1);
-al1.add("hello");
-
-// suggested, with data type restriction in <>, you can only put a class in the <>
-// you can add Integer to both <> before and after the '=',
-// or you can just add it before the '=' if you have two <>
-// when you want to create an empty ArrayList, use new constructor
-ArrayList<Integer> al2 = new ArrayList<>();          // capacity = 10, but no elements inside
-ArrayList<Integer> al3 = new ArrayList<>(100);       // capacity = 100, but no elements inside
-
-// -----------------------------------------------------------
-// advanced, will talk about it later in chapeter 2
-// -----------------------------------------------------------
-
-// the reference can also be List instead of ArrayList
-List<Integer> l4 = new ArrayList();				   // ArrayList is a special kind of array
-
-// when you have specific values you want to put in the ArrayList,
-// first create an array with {} to list all elements,
-// then use Arrays.asList() to cast the array into a List
-Integer[] nums = {1, 2, 3, 1, 1, 1};     // array
-List<Integer> l5 = new ArrayList(Arrays.asList(nums));
-```
-
-## 4 Methods
-
-### 4.1 ArrayList methods:
-
-ArrayList methods is a pre-existed class with many useful methods inside:
-
-```java
-// Assume we have an ArrayList with 1, 2, 3 inside
-Integer[] nums = {1, 2, 3};
-List<Integer> list = new ArrayList<>(Arrays.asList(nums));
-```
-
-| Method                      | Usage                                                                             | Example                                                  |
-| --------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| `al.size()`                 | check the number of elements in an ArrayList                                      | `list.size()` returns `3`                                |
-| `al.get(int idx)`           | read a specific element                                                           | `list.get(0)` returns `1`                                |
-| `al.set(int idx, Object o)` | modify a specific element                                                         | `list.set(2, 9)` changes `list` to `[1, 2, 9]`           |
-| `al.add(Object o)`          | append a new element in the end                                                   | `list.add(0)` changes `list` to `[1, 2, 9, 0]`           |
-| `al.add(int idx, Object o)` | insert a new element at a specific position                                       | `list.add(5, 3)` changes `list` to `[1, 2, 9, 5, 0]`     |
-| `al.remove(int idx)`        | remove an element at a specific position                                          | `list.remove(0)` changes `list` to `[2, 9, 5, 0]`        |
-| `al.remove(Object o)`       | go through the ArrayList and remove the first appearance of the parameter element | `list.remove((Integer) 9)` changes `list` to `[2, 5, 0]` |
-| `al.toString()`             | the `toString()` method for ArrayList class                                       | `list.toString()` returns `[2, 5, 0]`                    |
-
-### 4.2 Comparation between String, array and ArrayList
-
-|                      | String                                                          | Array                                                                                                                                              | ArrayList                                                                                                                         |
-| -------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| check the length     | `str.length()`                                                  | `array.length`                                                                                                                                     | `al.size()`                                                                                                                       |
-| idx -> element       | `str.chatAt()`                                                  | `array[idx]`                                                                                                                                       | `al.get(idx)`                                                                                                                     |
-| element -> idx       | `str.indexOf(c)`<br />`str.lastIndexOf(c)`                      | does not exist, have to create by urself                                                                                                           | `al.indexOf(c)`                                                                                                                   |
-| modifying an element | CANNOT, create a new one                                        | `array[idx] = xxx`                                                                                                                                 | `al.set(idx, value)`                                                                                                              |
-| adding new element   | CANNOT, create a new one                                        | does not exist, have to create by urself                                                                                                           | `al.add(object)` -> append in the end<br />`al.add(idx, object)` -> insert at a specific position                                 |
-| removing an element  | CANNOT, create a new one                                        | does not exist, have to create by urself                                                                                                           | `al.remove(idx)` -> remove an element at a specific position<br />`al.remove(object)` -> remove the first appearance of an object |
-| Comparing            | `str1.equals(str2)`                                             | `Arrays.equals(array1, array2)`for 1D<br />`Arrays.deepEquals(array1, array2)` for Multi-D                                                         | `al1.equals(al2)`                                                                                                                 |
-| converting to String | -                                                               | `Arrays.toString(array)` for 1-D<br />`Arrays.deepToString(array)` for Multi-D<br />Create your own method if you have specific output requirement | `al.toString()`<br />Create your own method if you have specific output requirement                                               |
-| Enhanced-for         | No enhanced-for<br />You can use if you cast it to a char array | Yes                                                                                                                                                | Yes                                                                                                                               |
-
-## 5 ArrayList VS LinkedList
-
-`LinkedList` also belongs to the "family" `List`, and that is to say, whatever methods that ArrayList contains also exist for LinkedList.
-
-ArrayList and LinkedList may look very similar, you can actually replace one with the other. However, the two are actually different for memory allocation.
-
-- ArrayList: elements are `continuously` stored, so it is `good at read and modify each element`, but `bad at adding or removing elements`.
-
-- LinkedList: elements are `not continuously` stored, so it is `bad at read and modify each element`, but `good at adding or removing elements`.
-
-# 2. LinkedList (Introduction)
+# 1. LinkedList (Introduction)
 
 ## 1. Overview
 
@@ -226,7 +122,7 @@ We'll make the head node point to the new first node by using the temp node.
 
 ![](../Imgs/week_1_linked_list_reverse_5.jpg)
 
-# 3. Nested Classes
+# 2. Nested Classes
 
 The Java programming language allows you to define a class within another class. Such a class is called a nested class and is illustrated here:
 
@@ -458,11 +354,11 @@ System.out.println("ShadowTest.this.x = " + ShadowTest.this.x);
 
 Serialization of inner classes, including local and anonymous classes, is strongly discouraged. When the Java compiler compiles certain constructs, such as inner classes, it creates synthetic constructs; these are classes, methods, fields, and other constructs that do not have a corresponding construct in the source code. Synthetic constructs enable Java compilers to implement new Java language features without changes to the JVM. However, synthetic constructs can vary among different Java compiler implementations, which means that .class files can vary among different implementations as well. Consequently, you may have compatibility issues if you serialize an inner class and then deserialize it with a different JRE implementation.
 
-# 4. Local Classes
+# 3. Local Classes
 
 Local classes are classes that are defined in a block, which is a group of zero or more statements between balanced braces. You typically find local classes defined in the body of a method.
 
-## 4.1. Declaring Local Classes
+## 3.1. Declaring Local Classes
 
 You can define a local class inside any block. For example, you can define a local class in a method body, a for loop, or an if clause.
 
@@ -539,11 +435,11 @@ First number is 1234567890
 Second number is invalid
 ```
 
-# 5. Anonymous Classes
+# 4. Anonymous Classes
 
 Anonymous classes enable you to make your code more concise. They enable you to declare and instantiate a class at the same time. They are like local classes except that they do not have a name. Use them if you need to use a local class only once.
 
-## 5.1. Declaring Anonymous Classes
+## 4.1. Declaring Anonymous Classes
 
 While local classes are class declarations, anonymous classes are expressions, which means that you define the class in another expression. The following example, HelloWorldAnonymousClasses, uses anonymous classes in the initialization statements of the local variables frenchGreeting and spanishGreeting, but uses a local class for the initialization of the variable englishGreeting:
 
@@ -604,7 +500,7 @@ public class HelloWorldAnonymousClasses {
 }
 ```
 
-### 5.2. Syntax of Anonymous Classes
+### 4.2. Syntax of Anonymous Classes
 
 As mentioned previously, an anonymous class is an expression. The syntax of an anonymous class expression is like the invocation of a constructor, except that there is a class definition contained in a block of code.
 
@@ -635,13 +531,13 @@ The anonymous class expression consists of the following:
 
 Because an anonymous class definition is an expression, it must be part of a statement. In this example, the anonymous class expression is part of the statement that instantiates the frenchGreeting object. (This explains why there is a semicolon after the closing brace.)
 
-# 6. Lambda Expressions
+# 5. Lambda Expressions
 
 One issue with anonymous classes is that if the implementation of your anonymous class is very simple, such as an interface that contains only one method, then the syntax of anonymous classes may seem unwieldy and unclear. In these cases, you're usually trying to pass functionality as an argument to another method, such as what action should be taken when someone clicks a button. Lambda expressions enable you to do this, to treat functionality as method argument, or code as data.
 
 The previous section, Anonymous Classes, shows you how to implement a base class without giving it a name. Although this is often more concise than a named class, for classes with only one method, even an anonymous class seems a bit excessive and cumbersome. Lambda expressions let you express instances of single-method classes more compactly.
 
-## 6.1. Syntax of Lambda Expressions
+## 5.1. Syntax of Lambda Expressions
 
 A lambda expression consists of the following:
 
@@ -689,11 +585,11 @@ The method operateBinary performs a mathematical operation on two integer operan
 20 - 10 = 10
 ```
 
-## 6.2 Serialization
+## 5.2 Serialization
 
 You can serialize a lambda expression if its target type and its captured arguments are serializable. However, like inner classes, the serialization of lambda expressions is strongly discouraged.
 
-# 7. Stream Processing
+# 6. Stream Processing
 
 Streams bring functional programming to Java, and are supported starting in Java 8. A stream pipeline consists of a source, followed by zero or more intermediate operations and a terminal operation.
 
@@ -710,22 +606,24 @@ Simply put, streams are wrappers around a data source, allowing us to operate wi
 
 ![](../Imgs/week_1_streams.png)
 
-### Stream source
+### 6.1. Stream source
 
 Streams can be created from Collections, Lists, Sets, ints, longs, doubles, arrays, and lines of a file.
 
-### Stream Operations are either intermediate or terminal
+### 6.2. Stream Operations are either intermediate or terminal
 
 - **Intermediate operations** such as filter, map or sort return a stream so we can chain multiple intermediate operations.
 - **Terminal operations** such as forEach, collect or reduce are either void or return a non-stream result.
 
-## Intermediate Operations
+## 6.3. Intermediate Operations
 
 Zero or more intermediate operations are allowed. Order matters for large datasets: **filter first**, then sort or map. More intermediate operations include: anyMatch(), distinct(), filter(), findFirst(), skip(), map(), sorted() and flatmap().
 
-## Terminal Operations
+## 6.4. Terminal Operations
 
 One terminal operation is allowed. **forEach** applies the same function to each element. **collect** saves the elements into a collection. **reduce** reduces the stream into a single summary element. More terminal operations include: count(), max(), min(), reduce() and summaryStatistics().
+
+## 6.5. Examples
 
 ```java
     // 1. Integer Stream
