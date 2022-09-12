@@ -185,13 +185,13 @@ AVL tree is a self-balancing Binary Search Tree (BST) where the difference betwe
 
 ### 1.4.1. Example of AVL Tree
 
-![](/../../Imgs/week_4_AVL_Tree_1.jpg)
+![](Imgs/../../Imgs/week_4_AVL_Tree_1.jpg)
 
 The above tree is AVL because the differences between heights of left and right subtrees for every node are less than or equal to 1.
 
 ### 1.4.2. Example of a Tree that is NOT an AVL Tree
 
-![](/../../Imgs/week_4_AVL_Tree_2.jpg)
+![](Imgs/../../Imgs/week_4_AVL_Tree_2.jpg)
 
 The above tree is not AVL because the differences between the heights of the left and right subtrees for 8 and 12 are greater than 1.
 
