@@ -63,7 +63,7 @@ Java ArrayList class uses a dynamic array for storing the elements. It is like a
 Let’s see the example of creating the ArrayList in the java collection.
 
 ```java
-ArrayList<Integer> list=new ArrayList<Integer>();
+ArrayList<Integer> list = new ArrayList<Integer>();
 ```
 
 ### 3.2. LinkedList
@@ -75,7 +75,7 @@ Java LinkedList class can contain duplicate elements and maintain insertion orde
 Let’s see the example of creating the LinkedList in the java collection.
 
 ```java
-LinkedList<String> al=new LinkedList<String>();
+LinkedList<String> al = new LinkedList<String>();
 ```
 
 ### 3.3. Vector
@@ -113,7 +113,7 @@ The PriorityQueue class implements the Queue interface. It holds the elements or
 Let’s see the example of creating the PriorityQueue in the java collection.
 
 ```java
-PriorityQueue<String> queue=new PriorityQueue<String>();
+PriorityQueue<String> queue = new PriorityQueue<String>();
 ```
 
 ## 6. Set
@@ -134,7 +134,7 @@ The important points about the Java HashSet class are:
 - HashSet is the best approach for search operations. Let’s see the example of creating the HashSet in the java collection.
 
 ```java
-HashSet<String> set=new HashSet<>();
+HashSet<String> set = new HashSet<>();
 ```
 
 ### 6.2. LinkedHashSet
@@ -146,7 +146,7 @@ LinkedHashSet class contains unique elements only like HashSet. It provides all 
 Let’s see the example of creating the LinkedHashSet in the java collection.
 
 ```java
-LinkedHashSet<String> set=new LinkedHashSet();
+LinkedHashSet<String> set = new LinkedHashSet();
 ```
 
 ### 6.3. TreeSet
@@ -164,7 +164,7 @@ The important points about the Java TreeSet class are:
 Let’s see the example of creating the TreeHashSet in the java collection.
 
 ```java
-TreeSet<String> set=new TreeSet<String>();
+TreeSet<String> set = new TreeSet<String>();
 ```
 
 ## 7. Map
@@ -182,7 +182,7 @@ HashMap in Java is like the legacy Hashtable class, but it is not synchronized. 
 Let’s see the example of creating the HashMap in the java collection.
 
 ```java
-HashMap<Integer,String> map=new HashMap<Integer,String>()
+HashMap<Integer,String> map = new HashMap<Integer,String>()
 ```
 
 ### 7.2. LinkedHashMap
@@ -206,7 +206,7 @@ TreeMap contains values based on the key. It implements the NavigableMap interfa
 Let’s see the example of creating the TreeMap in the java collection.
 
 ```java
-TreeMap<Integer,String> map=new TreeMap<Integer,String>();
+TreeMap<Integer,String> map = new TreeMap<Integer,String>();
 ```
 
 # 2. Example & Exam Review
@@ -229,30 +229,30 @@ Example 1:
 ![](Imgs/../../Imgs/week_5_example_1.png)
 
 Input: board =
-[["5","3",".",".","7",".",".",".","."]
-,["6",".",".","1","9","5",".",".","."]
-,[".","9","8",".",".",".",".","6","."]
-,["8",".",".",".","6",".",".",".","3"]
-,["4",".",".","8",".","3",".",".","1"]
-,["7",".",".",".","2",".",".",".","6"]
-,[".","6",".",".",".",".","2","8","."]
-,[".",".",".","4","1","9",".",".","5"]
-,[".",".",".",".","8",".",".","7","9"]]
+[["5","3",".",".","7",".",".",".","."]  
+,["6",".",".","1","9","5",".",".","."]  
+,[".","9","8",".",".",".",".","6","."]  
+,["8",".",".",".","6",".",".",".","3"]  
+,["4",".",".","8",".","3",".",".","1"]  
+,["7",".",".",".","2",".",".",".","6"]  
+,[".","6",".",".",".",".","2","8","."]  
+,[".",".",".","4","1","9",".",".","5"]  
+,[".",".",".",".","8",".",".","7","9"]]  
 Output: true
 
 Example 2:
 
 Input: board =
-[["8","3",".",".","7",".",".",".","."]
-,["6",".",".","1","9","5",".",".","."]
-,[".","9","8",".",".",".",".","6","."]
-,["8",".",".",".","6",".",".",".","3"]
-,["4",".",".","8",".","3",".",".","1"]
-,["7",".",".",".","2",".",".",".","6"]
-,[".","6",".",".",".",".","2","8","."]
-,[".",".",".","4","1","9",".",".","5"]
+[["8","3",".",".","7",".",".",".","."]  
+,["6",".",".","1","9","5",".",".","."]  
+,[".","9","8",".",".",".",".","6","."]  
+,["8",".",".",".","6",".",".",".","3"]  
+,["4",".",".","8",".","3",".",".","1"]  
+,["7",".",".",".","2",".",".",".","6"]  
+,[".","6",".",".",".",".","2","8","."]  
+,[".",".",".","4","1","9",".",".","5"]  
 ,[".",".",".",".","8",".",".","7","9"]]
-Output: false
+Output: false  
 Explanation: Same as Example 1, except with the 5 in the top left corner being modified to 8. Since there are two 8's in the top left 3x3 sub-box, it is invalid.
 
 **Constraints**
