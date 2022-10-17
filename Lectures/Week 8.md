@@ -63,7 +63,7 @@ Consider a scenario in which there is an app that's developed in the US which re
 
 To deal with this problem, we'll create an adapter which will convert the values and give us the desired results:
 
-![](week_8_adapter_uml.png)
+![](../Imgs/week_8_adapter_uml.png)
 
 First, we'll create the original interface Movable which is supposed to return the speed of some luxury cars in miles per hour:
 
@@ -148,7 +148,7 @@ To achieve this, we rely on a factory which provides us with the objects, hiding
 
 In this example, we'll create a Polygon interface which will be implemented by several concrete classes. A PolygonFactory will be used to fetch objects from this family:
 
-![](week_8_factory_uml.png)
+![](../Imgs/week_8_factory_uml.png)
 
 Let's first create the Polygon interface:
 
