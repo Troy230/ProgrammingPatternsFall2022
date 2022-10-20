@@ -192,3 +192,91 @@ Notice how the client can rely on this factory to give us an appropriate Polygon
 - When the implementation of an interface or an abstract class is expected to change frequently
 - When the current implementation cannot comfortably accommodate new change
 - When the initialization process is relatively simple, and the constructor only requires a handful of parameters
+
+## 1.5 Decorator
+
+A Decorator pattern can be used to attach additional responsibilities to an object either statically or dynamically. A Decorator provides an enhanced interface to the original object.
+
+In the implementation of this pattern, we prefer composition over an inheritance – so that we can reduce the overhead of subclassing again and again for each decorating element. The recursion involved with this design can be used to decorate our object as many times as we require.
+
+### 1.5.1 Decorator Example
+
+Suppose we have a Christmas tree object and we want to decorate it. The decoration does not change the object itself; it’s just that in addition to the Christmas tree, we're adding some decoration items like garland, tinsel, tree-topper, bubble lights, etc.:
+
+![](../Imgs/week_8_decorator_uml.jpg)
+
+For this scenario, we'll follow the original Gang of Four design and naming conventions. First, we'll create a ChristmasTree interface and its implementation:
+
+```java
+public interface ChristmasTree {
+    String decorate();
+}
+```
+
+The implementation of this interface will look like:
+
+```java
+public class ChristmasTreeImpl implements ChristmasTree {
+
+    @Override
+    public String decorate() {
+        return "Christmas tree";
+    }
+}
+```
+
+We'll now create an abstract TreeDecorator class for this tree. This decorator will implement the ChristmasTree interface as well as hold the same object. The implemented method from the same interface will simply call the decorate() method from our interface:
+
+```java
+public abstract class TreeDecorator implements ChristmasTree {
+    private ChristmasTree tree;
+
+    // standard constructors
+    @Override
+    public String decorate() {
+        return tree.decorate();
+    }
+}
+```
+
+We'll now create some decorating element. These decorators will extend our abstract TreeDecorator class and will modify its decorate() method according to our requirement:
+
+```java
+public class BubbleLights extends TreeDecorator {
+
+    public BubbleLights(ChristmasTree tree) {
+        super(tree);
+    }
+
+    public String decorate() {
+        return super.decorate() + decorateWithBubbleLights();
+    }
+
+    private String decorateWithBubbleLights() {
+        return " with Bubble Lights";
+    }
+}
+```
+
+For this case, the following is true:
+
+```java
+@Test
+public void whenDecoratorsInjectedAtRuntime_thenConfigSuccess() {
+    ChristmasTree tree1 = new Garland(new ChristmasTreeImpl());
+    assertEquals(tree1.decorate(),
+      "Christmas tree with Garland");
+
+    ChristmasTree tree2 = new BubbleLights(
+      new Garland(new Garland(new ChristmasTreeImpl())));
+    assertEquals(tree2.decorate(),
+      "Christmas tree with Garland with Garland with Bubble Lights");
+}
+```
+
+Note that in the first tree1 object, we're only decorating it with only one Garland, while the other tree2 object we're decorating with one BubbleLights and two Garlands. This pattern gives us this flexibility to add as many decorators as we want at runtime.
+
+### 1.5.2. When to Use Decorator Pattern
+
+- When we wish to add, enhance or even remove the behavior or state of objects
+- When we just want to modify the functionality of a single object of class and leave others unchanged
