@@ -343,3 +343,72 @@ The **MVCMain** class fetches the employee data from the method where we have en
 ![](../Imgs/week_9_mvc_2)
 
 # 2. Internationalization (I18n)
+
+Internationalization in Java or Java i18n is a very important feature. Java provides internationalization (i18n) support through resource bundles.
+
+For making your application support different locales, we need to create locale specific properties file. The file names follow the pattern of bundle name with language code and country code, for example ApplicationMessages_en_US.properties. Once the property files for specific locales are ready, all you need to do is initialize the resource bundle with correct Locale. Java provides two classes java.util.ResourceBundle and java.util.Locale that are used for this purpose. ResourceBundle reads the locale specific property file and you can get the locale specific value for any key. This is very helpful in making your web application texts locale specific, you can get the locale information from the HTTP request and generate the dynamic page with that locale resource bundle files. You can also provide option to user to chose the locale and update the labels dynamically.
+
+![](../Imgs/week_9_internationalization_1.png)
+
+Here is the java code for **JavaInternationalizationExample** class.
+
+```java
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+public class JavaInternationalizationExample {
+
+    public static void main(String[] args) {
+        //default locale
+        ResourceBundle bundle = ResourceBundle.getBundle("ApplicationMessages");
+        //Get ResourceBundle with Locale that are already defined
+        ResourceBundle bundleFR = ResourceBundle.getBundle("ApplicationMessages", Locale.FRANCE);
+        //Get resource bundle when Locale needs to be created
+        ResourceBundle bundleSWE = ResourceBundle.getBundle("ApplicationMessages", new Locale("sv", "SE"));
+
+        //lets print some messages
+        printMessages(bundle);
+        printMessages(bundleFR);
+        printMessages(bundleSWE);
+
+    }
+
+    private static void printMessages(ResourceBundle bundle) {
+        System.out.println(bundle.getString("CountryName"));
+        System.out.println(bundle.getString("CurrencyCode"));
+    }
+
+}
+```
+
+Here bundle name is `ApplicationMessages` and I have 2 locale specific resource bundles and one default resource bundle. `ApplicationMessages.properties`.
+
+```
+CountryName=USA
+CurrencyCode=USD
+```
+
+`ApplicationMessages_fr_FR.properties`
+
+```
+CountryName=France
+CurrencyCode=Euro
+```
+
+`ApplicationMessages_sv_SE.properties`
+
+```
+CountryName=Sweden
+CurrencyCode=Kr
+```
+
+Notice the use of Locale class, there are some locales already defined but we can always create new locale by passing language code and country code to it’s constructor. When I run the above program, here is the output.
+
+```
+USA
+USD
+France
+Euro
+Sweden
+Kr
+```
