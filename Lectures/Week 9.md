@@ -147,7 +147,7 @@ The MVC pattern architecture consists of three layers:
 
 In Java Programming, the Model contains the simple Java classes, the View used to display the data and the Controller contains the servlets. Due to this separation the user requests are processed as follows:
 
-![](../Imgs/week_9_mvc)
+![](../Imgs/week_9_mvc.png)
 
 1. A client (browser) sends a request to the controller on the server side, for a page.
 2. The controller then calls the model. It gathers the requested data.
