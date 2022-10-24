@@ -127,6 +127,112 @@ assertEquals(observer.getNews(), "news");
 
 The Observer interface isn't perfect, and has been deprecated since Java 9. One of the cons is that Observable isn't an interface, it's a class, and that's why subclasses can't be used as observables.
 
+### 1.6.3. More example
+
+```java
+public interface Subject {
+	void subscrible(Subscriber sub);
+	void unSubscrible(Observer sub);
+	void notifySubscribers();
+	void sendMail(String title);
+}
+```
+
+```java
+public interface Observer {
+	void update();
+	void subscribleMailingList(MailingList mailingList);
+}
+```
+
+```java
+public class Subscriber implements Observer {
+	private String name;
+	private MailingList mailingList = new MailingList();
+
+	public Subscriber(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public void update() {
+		System.out.println("Hey " + name + " Mail sent, title: " + mailingList.title);
+	}
+
+	@Override
+	public void subscribleMailingList(MailingList mailingList) {
+		this.mailingList = mailingList;
+	}
+
+}
+```
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class MailingList implements Subject {
+
+	private List<Subscriber> subs = new ArrayList<>();
+	String title;
+
+	@Override
+	public void subscrible(Subscriber sub) {
+		subs.add(sub);
+	}
+
+	@Override
+	public void unSubscrible(Observer sub) {
+		subs.remove(sub);
+	}
+
+	@Override
+	public void notifySubscribers() {
+		for(Observer sub : subs) {
+			sub.update();
+		}
+	}
+
+	@Override
+	public void sendMail(String title) {
+		this.title = title;
+		notifySubscribers();
+	}
+
+}
+```
+
+```java
+public class AdinMailingList {
+
+	public static void main(String[] args) {
+		MailingList adinMailingList = new MailingList();
+
+		Subscriber s1 = new Subscriber("James");
+		Subscriber s2 = new Subscriber("Jordan");
+		Subscriber s3 = new Subscriber("Claudia");
+		Subscriber s4 = new Subscriber("Audrey");
+		Subscriber s5 = new Subscriber("Jenny");
+
+		adinMailingList.subscrible(s1);
+		adinMailingList.subscrible(s2);
+		adinMailingList.subscrible(s3);
+		adinMailingList.subscrible(s4);
+		adinMailingList.subscrible(s5);
+
+		// adinMailingList.unSubscrible(s4);
+
+		s1.subscribleMailingList(adinMailingList);
+		s2.subscribleMailingList(adinMailingList);
+		s3.subscribleMailingList(adinMailingList);
+		s4.subscribleMailingList(adinMailingList);
+		s5.subscribleMailingList(adinMailingList);
+
+		adinMailingList.sendMail("New tutorial");
+	}
+}
+```
+
 ## 1.7. MVC (Model-View-Controller)
 
 The Model-View-Controller (MVC) is a well-known design pattern in the web development field. It is way to organize our code. It specifies that a program or application shall consist of data model, presentation information and control information. The MVC pattern needs all these components to be separated as different objects.
