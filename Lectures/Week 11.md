@@ -113,3 +113,359 @@ String importantInfo[] = {
 ```
 
 Notice that main declares that it throws InterruptedException. This is an exception that sleep throws when another thread interrupts the current thread while sleep is active. Since this application has not defined another thread to cause the interrupt, it doesn't bother to catch InterruptedException.
+
+### 3.3. Joins
+
+The join method allows one thread to wait for the completion of another. If t is a Thread object whose thread is currently executing,
+
+`t.join();`
+
+causes the current thread to pause execution until t's thread terminates. Overloads of join allow the programmer to specify a waiting period. However, as with sleep, join is dependent on the OS for timing, so you should not assume that join will wait exactly as long as you specify.
+
+Like sleep, join responds to an interrupt by exiting with an InterruptedException.
+
+## 4. Liveness
+
+A concurrent application's ability to execute in a timely manner is known as its liveness. This section describes the most common kind of liveness problem, deadlock, and goes on to briefly describe two other liveness problems, starvation and livelock.
+
+### 4.1. Deadlock
+
+Deadlock describes a situation where two or more threads are blocked forever, waiting for each other. Here's an example.
+
+Alphonse and Gaston are friends, and great believers in courtesy. A strict rule of courtesy is that when you bow to a friend, you must remain bowed until your friend has a chance to return the bow. Unfortunately, this rule does not account for the possibility that two friends might bow to each other at the same time. This example application, Deadlock, models this possibility:
+
+```java
+public class Deadlock {
+    static class Friend {
+        private final String name;
+        public Friend(String name) {
+            this.name = name;
+        }
+        public String getName() {
+            return this.name;
+        }
+        public synchronized void bow(Friend bower) {
+            System.out.format("%s: %s"
+                + "  has bowed to me!%n",
+                this.name, bower.getName());
+            bower.bowBack(this);
+        }
+        public synchronized void bowBack(Friend bower) {
+            System.out.format("%s: %s"
+                + " has bowed back to me!%n",
+                this.name, bower.getName());
+        }
+    }
+
+    public static void main(String[] args) {
+        final Friend alphonse =
+            new Friend("Alphonse");
+        final Friend gaston =
+            new Friend("Gaston");
+        new Thread(new Runnable() {
+            public void run() { alphonse.bow(gaston); }
+        }).start();
+        new Thread(new Runnable() {
+            public void run() { gaston.bow(alphonse); }
+        }).start();
+    }
+}
+```
+
+When Deadlock runs, it's extremely likely that both threads will block when they attempt to invoke bowBack. Neither block will ever end, because each thread is waiting for the other to exit bow.
+
+### 4.2. Starvation and Livelock
+
+Starvation and livelock are much less common a problem than deadlock, but are still problems that every designer of concurrent software is likely to encounter.
+
+#### 4.2.1. Starvation
+
+Starvation describes a situation where a thread is unable to gain regular access to shared resources and is unable to make progress. This happens when shared resources are made unavailable for long periods by "greedy" threads. For example, suppose an object provides a synchronized method that often takes a long time to return. If one thread invokes this method frequently, other threads that also need frequent synchronized access to the same object will often be blocked.
+
+#### 4.2.2. Livelock
+
+A thread often acts in response to the action of another thread. If the other thread's action is also a response to the action of another thread, then livelock may result. As with deadlock, livelocked threads are unable to make further progress. However, the threads are not blocked — they are simply too busy responding to each other to resume work. This is comparable to two people attempting to pass each other in a corridor: Alphonse moves to his left to let Gaston pass, while Gaston moves to his right to let Alphonse pass. Seeing that they are still blocking each other, Alphone moves to his right, while Gaston moves to his left. They're still blocking each other, so...
+
+## 5. Thread Example
+
+```java
+    public static void main(String[] args) throws InterruptedException {
+//        MultithreadThing myThing = new MultithreadThing();
+//        MultithreadThing myThing2 = new MultithreadThing();
+
+        for(int i = 0; i <= 3; i++) {
+            MultithreadThing myThing = new MultithreadThing(i);
+            Thread myThread = new Thread(myThing);
+            myThread.start();
+
+            //myThread.join();
+            //System.out.println(myThread.isAlive());
+        }
+
+//        myThing.start();
+//        myThing2.start();
+    }
+
+
+
+public class MultithreadThing implements Runnable {
+
+    private int threadNumber;
+
+    public MultithreadThing(int threadNumber) {
+        this.threadNumber = threadNumber;
+    }
+
+    @Override
+    public void run() {
+        for(int i = 0; i <= 5; i++) {
+            System.out.println(i + " from thread " + threadNumber);
+
+//            if(threadNumber == 3) {
+//                throw new RuntimeException();
+//            }
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MultithreadThing.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}
+```
+
+## 6. Threadpool Example
+
+```java
+class WorkerThread implements Runnable {
+
+    private String message;
+
+    public WorkerThread(String s) {
+        this.message = s;
+    }
+
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + " (Start) message = " + message);
+        processmessage();   //call processmessage method that sleeps the thread for 2 seconds
+        System.out.println(Thread.currentThread().getName() + " (End)");    //prints thread name
+    }
+
+    private void processmessage() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+public class TestThreadPool {
+
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(5); //creating a pool of 5 threads
+
+        for (int i = 0; i < 10; i++) {
+            Runnable worker = new WorkerThread("" + i);
+            executor.execute(worker);   //calling execute method of ExecutorService
+        }
+        executor.shutdown();
+
+        while (!executor.isTerminated()) {
+        }
+
+        System.out.println("Finished all threads");
+    }
+
+}
+```
+
+## 7. Semaphore Example
+
+```java
+import java.util.concurrent.Semaphore;
+
+/**
+ *
+ * @author hashemim
+ */
+
+class WorkerThread implements Runnable {
+
+    private String message;
+    private Semaphore semaphore;
+
+    public WorkerThread(Semaphore semaphore, String s) {
+        this.semaphore = semaphore;
+        this.message = s;
+    }
+
+    public void run() {
+        semaphore.acquireUninterruptibly();
+        System.out.println(Thread.currentThread().getName() + " (Start) message = " + message);
+        processmessage();   //call processmessage method that sleeps the thread for 2 seconds
+        System.out.println(Thread.currentThread().getName() + " (End)");    //prints thread name
+        semaphore.release();
+    }
+
+    private void processmessage() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+
+/**
+ *
+ * @author hashemim
+ */
+public class TestThreadPool {
+
+    public static void main(String[] args) {
+        Semaphore semaphore = new Semaphore(3);
+
+        ExecutorService executor = Executors.newFixedThreadPool(10); //creating a pool of 10 threads
+
+        for (int i = 0; i < 10; i++) {
+            Runnable worker = new WorkerThread(semaphore, "" + i);
+            executor.execute(worker);   //calling execute method of ExecutorService
+        }
+
+        executor.shutdown();
+
+        while (!executor.isTerminated()) {
+        }
+
+        System.out.println("Finished all threads");
+    }
+
+}
+```
+
+## 8. ForkJoinPool Example
+
+```java
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveAction;
+import javax.imageio.ImageIO;
+
+/**
+ *
+ * @author hashemim
+ */
+public class ForkBlur extends RecursiveAction {
+
+    private int[] mSource;
+    private int mStart;
+    private int mLength;
+    private int[] mDestination;
+    private int mBlurWidth = 15; // Processing window size, should be odd.
+
+    public ForkBlur(int[] src, int start, int length, int[] dst) {
+        mSource = src;
+        mStart = start;
+        mLength = length;
+        mDestination = dst;
+    }
+
+    // Average pixels from source, write results into destination.
+    protected void computeDirectly() {
+        int sidePixels = (mBlurWidth - 1) / 2;
+        for (int index = mStart; index < mStart + mLength; index++) {
+            // Calculate average.
+            float rt = 0, gt = 0, bt = 0;
+            for (int mi = -sidePixels; mi <= sidePixels; mi++) {
+                int mindex = Math.min(Math.max(mi + index, 0), mSource.length - 1);
+                int pixel = mSource[mindex];
+                rt += (float) ((pixel & 0x00ff0000) >> 16) / mBlurWidth;
+                gt += (float) ((pixel & 0x0000ff00) >> 8) / mBlurWidth;
+                bt += (float) ((pixel & 0x000000ff) >> 0) / mBlurWidth;
+            }
+
+            // Re-assemble destination pixel.
+            int dpixel = (0xff000000)
+                    | (((int) rt) << 16)
+                    | (((int) gt) << 8)
+                    | (((int) bt) << 0);
+            mDestination[index] = dpixel;
+        }
+    }
+    protected static int sThreshold = 10000;
+
+    @Override
+    protected void compute() {
+        if (mLength < sThreshold) {
+            computeDirectly();
+            return;
+        }
+
+        int split = mLength / 2;
+
+        invokeAll(new ForkBlur(mSource, mStart, split, mDestination),
+                new ForkBlur(mSource, mStart + split, mLength - split,
+                mDestination));
+    }
+
+    // Plumbing follows.
+    public static void main(String[] args) throws Exception {
+        String srcName = "red-tulips.jpg";
+        File srcFile = new File(srcName);
+        BufferedImage image = ImageIO.read(srcFile);
+
+        System.out.println("Source image: " + srcName);
+
+        BufferedImage blurredImage = blur(image);
+
+        String dstName = "blurred-tulips.jpg";
+        File dstFile = new File(dstName);
+        ImageIO.write(blurredImage, "jpg", dstFile);
+
+        System.out.println("Output image: " + dstName);
+
+    }
+
+    public static BufferedImage blur(BufferedImage srcImage) {
+        int w = srcImage.getWidth();
+        int h = srcImage.getHeight();
+
+        int[] src = srcImage.getRGB(0, 0, w, h, null, 0, w);
+        int[] dst = new int[src.length];
+
+        System.out.println("Array size is " + src.length);
+        System.out.println("Threshold is " + sThreshold);
+
+        int processors = Runtime.getRuntime().availableProcessors();
+        System.out.println(Integer.toString(processors) + " processor"
+                + (processors != 1 ? "s are " : " is ")
+                + "available");
+
+        ForkBlur fb = new ForkBlur(src, 0, src.length, dst);
+
+        ForkJoinPool pool = new ForkJoinPool();
+
+        long startTime = System.currentTimeMillis();
+        pool.invoke(fb);
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Image blur took " + (endTime - startTime) +
+                " milliseconds.");
+
+        BufferedImage dstImage =
+                new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        dstImage.setRGB(0, 0, w, h, dst, 0, w);
+
+        return dstImage;
+    }
+}
+```
