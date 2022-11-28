@@ -1,5 +1,9 @@
 # SQLite
 
+You can get the jar file from here:
+
+https://github.com/xerial/sqlite-jdbc
+
 ## Example
 
 ```java
