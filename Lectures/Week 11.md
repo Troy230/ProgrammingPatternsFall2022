@@ -657,3 +657,9 @@ class Foo {
   }
 }
 ```
+
+## 10. More on Multithreading and Concurrency
+
+For more information, please read the following complete tutorial (will be on your exams):
+
+https://docs.oracle.com/javase/tutorial/essential/concurrency/
